@@ -2,26 +2,29 @@
 
 require 'ruby_candy/client/color_correction_api'
 require 'ruby_candy/client/firmware_config_api'
+require 'ruby_candy/client/pixels_api'
 
 require 'socket'
 
 module RubyCandy
   class Client
-    include FirmwareConfigAPI
     include ColorCorrectionAPI
+    include FirmwareConfigAPI
+    include PixelsAPI
+
     attr_reader :channel, :host, :port
 
-    DEFAULT_CHANNEL = 0
     DEFAULT_HOST = 'localhost'
     DEFAULT_PORT = 7890
 
-    def initialize(channel: DEFAULT_CHANNEL, host: DEFAULT_HOST, port: DEFAULT_PORT)
+    def initialize(channel: 0, host: DEFAULT_HOST, pixel_count: 0, port: DEFAULT_PORT)
       @channel = channel
       @host = host
       @port = port
 
       reset_firmware_config(send: false)
       reset_color_correction(send: false)
+      reset_pixels(length: pixel_count)
     end
 
     private

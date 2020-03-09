@@ -38,17 +38,15 @@ module RubyCandy
       end
 
       def color_correction_packet
-        data = color_correction_bytes
-        data_length = data.count + 4
-        header = color_correction_header(data_length)
-        (header + data).pack('C*')
+        (color_correction_header + color_correction_bytes).pack('C*')
       end
 
       def color_correction_data
         @color_correction.to_json.bytes
       end
 
-      def color_correction_header(data_length)
+      def color_correction_header
+        data_length = color_correction_bytes.count + 4
         [
           0x00,                 # Channel (reserved)
           0xFF,                 # Command (System Exclusive)
@@ -72,7 +70,7 @@ module RubyCandy
         attr_reader :config_hash
 
         def initialize(config_hash: DEFAULT_HASH)
-          @config_hash = config_hash
+          @config_hash = config_hash.dup
         end
 
         def gamma=(val)
