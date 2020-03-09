@@ -13,13 +13,6 @@ module RubyCandy
       ].freeze
       VAR_NAME = '@firmware_config'
 
-      API_METHODS.each do |delegated_method|
-        define_method(delegated_method) do |*args|
-          instance_variable_get(VAR_NAME).public_send(delegated_method, *args)
-          send_firmware_config
-        end
-      end
-
       def reset_firmware_config(send: true)
         instance_variable_set(VAR_NAME, FirmwareConfig.new)
         send_firmware_config if send
@@ -30,6 +23,13 @@ module RubyCandy
           socket_send(firmware_config_packet)
         else
           puts firmware_config_packet.inspect
+        end
+      end
+
+      API_METHODS.each do |delegated_method|
+        define_method(delegated_method) do |*args|
+          instance_variable_get(VAR_NAME).public_send(delegated_method, *args)
+          send_firmware_config
         end
       end
 

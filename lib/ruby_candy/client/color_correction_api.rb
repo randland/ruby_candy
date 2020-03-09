@@ -11,13 +11,6 @@ module RubyCandy
       ].freeze
       VAR_NAME = '@color_correction'
 
-      API_METHODS.each do |delegated_method|
-        define_method(delegated_method) do |*args|
-          instance_variable_get(VAR_NAME).public_send(delegated_method, *args)
-          send_color_correction
-        end
-      end
-
       def reset_color_correction(send: true)
         instance_variable_set(VAR_NAME, ColorCorrection.new)
         send_color_correction if send
@@ -28,6 +21,13 @@ module RubyCandy
           socket_send(color_correction_packet)
         else
           puts color_correction_packet.inspect
+        end
+      end
+
+      API_METHODS.each do |delegated_method|
+        define_method(delegated_method) do |*args|
+          instance_variable_get(VAR_NAME).public_send(delegated_method, *args)
+          send_color_correction
         end
       end
 
