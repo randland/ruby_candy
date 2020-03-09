@@ -1,3 +1,4 @@
+require "ruby_candy/client"
 require "ruby_candy/version"
 
 module RubyCandy
